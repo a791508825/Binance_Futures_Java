@@ -45,7 +45,8 @@ public class PostOrder {
                 System.out.println("有一边持仓为空,请检查");
                 break;
             }
-            if (positionRisk.getUnrealizedProfit().add(positionRisk1.getUnrealizedProfit()).compareTo(BigDecimal.valueOf(13)) >= 0) {
+            BigDecimal condition = positionRisk.getUnrealizedProfit().add(positionRisk1.getUnrealizedProfit());
+            if (condition.compareTo(BigDecimal.valueOf(13)) >= 0) {
                 try {
                     System.out.println(syncRequestClient.postOrder(positionRisk.getSymbol(),
                             positionRisk.getPositionAmt().compareTo(BigDecimal.ZERO) < 0 ? OrderSide.BUY : OrderSide.SELL, PositionSide.BOTH, OrderType.MARKET, null,
