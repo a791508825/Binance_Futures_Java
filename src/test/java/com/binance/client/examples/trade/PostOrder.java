@@ -1,5 +1,6 @@
 package com.binance.client.examples.trade;
 
+import com.alibaba.fastjson.JSONObject;
 import com.binance.client.RequestOptions;
 import com.binance.client.SyncRequestClient;
 
@@ -7,14 +8,60 @@ import com.binance.client.examples.constants.PrivateConfig;
 import com.binance.client.model.enums.*;
 import com.binance.client.model.trade.Position;
 import com.binance.client.model.trade.PositionRisk;
+import okhttp3.*;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class PostOrder {
+    public static void sendmsg() {
+        try {
+            JSONObject postInfo = new JSONObject();
+            postInfo.put("msgtype", "markdown");
+            JSONObject markdown = new JSONObject();
+            // 第一屏也就是钉钉消息列表里面的消息
+            String title = "", context = "OKOK,小钱到手test";
+            markdown.put("title", title + "|运维");
+            markdown.put("text", context);
+            postInfo.put("markdown", markdown);
+            postInfo.put("isAtAll", false);
+            Long timestamp = System.currentTimeMillis();
+            String uri = "https://oapi.dingtalk.com/robot/send?access_token=97addf9266699e85eb25cd8534dbe38ef3a285f583fbd859256122863f4b8eac";
+            String responseText = "";
+            RequestBody requestBody = FormBody.create(MediaType.parse("application/json; charset=utf-8"), postInfo.toJSONString());
+            Request.Builder requestBuilder = new Request.Builder();
+            requestBuilder.url(uri + "&timestamp=" + timestamp);
+            requestBuilder.post(requestBody);
+            Request request = requestBuilder.build();
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+
+            OkHttpClient okHttpClient = builder.connectTimeout(10, TimeUnit.SECONDS)
+                    .readTimeout(10, TimeUnit.SECONDS)
+                    .writeTimeout(10, TimeUnit.SECONDS).build();
+            Response response = okHttpClient.newCall(request).execute();
+            if (response.isSuccessful()) {
+                responseText = response.body().string();
+            } else {
+            }
+            if (response != null) {
+                response.close();
+            }
+            System.out.println(responseText);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public static void main(String[] args) {
         RequestOptions options = new RequestOptions();
         SyncRequestClient syncRequestClient = SyncRequestClient.create(PrivateConfig.API_KEY, PrivateConfig.SECRET_KEY,
@@ -54,6 +101,7 @@ public class PostOrder {
                     System.out.println(syncRequestClient.postOrder(symbol1, positionRisk1.getPositionAmt().compareTo(BigDecimal.ZERO) < 0 ? OrderSide.BUY : OrderSide.SELL,
                             PositionSide.BOTH, OrderType.MARKET, null,
                             positionRisk1.getPositionAmt().abs().toPlainString(), null, null, null, null, null, NewOrderRespType.RESULT));
+                    sendmsg();
                     break;
                 } catch (Exception e) {
                     e.printStackTrace();
