@@ -23,7 +23,7 @@ class ApiSignature {
         }
 
         builder.putToUrl("recvWindow", Long.toString(BinanceApiConstants.DEFAULT_RECEIVING_WINDOW))
-                .putToUrl("timestamp", Long.toString(System.currentTimeMillis()));
+                .putToUrl("timestamp", Long.toString(System.currentTimeMillis()-1000));
 
         Mac hmacSha256;
         try {
