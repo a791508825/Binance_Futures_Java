@@ -6,16 +6,13 @@ import com.binance.client.SyncRequestClient;
 
 import com.binance.client.examples.constants.PrivateConfig;
 import com.binance.client.model.enums.*;
-import com.binance.client.model.trade.Position;
+import com.binance.client.model.market.SymbolPrice;
 import com.binance.client.model.trade.PositionRisk;
 import okhttp3.*;
+import org.apache.commons.lang3.RandomUtils;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.math.BigDecimal;
-import java.net.URLEncoder;
-import java.util.Base64;
-import java.util.Date;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -63,9 +60,43 @@ public class PostOrder {
     }
 
     public static void main(String[] args) {
+        String symbol = "ETHUSDT";
+        String symbol1 = "SOLUSDT";
+        int symbolScale = 4;
+        int symbol1Scale = 2;
+        BigDecimal value = BigDecimal.valueOf(500);
+
         RequestOptions options = new RequestOptions();
         SyncRequestClient syncRequestClient = SyncRequestClient.create(PrivateConfig.API_KEY, PrivateConfig.SECRET_KEY,
                 options);
+
+        List<SymbolPrice> symbolPrices = syncRequestClient.getSymbolPriceTicker(symbol);
+        List<SymbolPrice> symbol1Prices = syncRequestClient.getSymbolPriceTicker(symbol1);
+
+        if (symbolPrices == null || symbolPrices.size() == 0 || symbol1Prices == null || symbol1Prices.size() == 0
+                || System.currentTimeMillis() - symbolPrices.get(0).getTime() > 2000
+                || System.currentTimeMillis() - symbol1Prices.get(0).getTime() > 2000) {
+            System.out.println("无有效价格");
+            return;
+        }
+
+        if (RandomUtils.nextBoolean()) {
+            System.out.println(syncRequestClient.postOrder(symbol,
+                    OrderSide.BUY, PositionSide.BOTH, OrderType.MARKET, null,
+                    value.divide(symbolPrices.get(0).getPrice(), symbolScale, RoundingMode.HALF_DOWN).toPlainString(), null, null, null, null, null, NewOrderRespType.RESULT));
+            System.out.println(syncRequestClient.postOrder(symbol1,
+                    OrderSide.SELL, PositionSide.BOTH, OrderType.MARKET, null,
+                    value.divide(symbol1Prices.get(0).getPrice(), symbol1Scale, RoundingMode.HALF_DOWN).toPlainString(), null, null, null, null, null, NewOrderRespType.RESULT));
+        } else {
+            System.out.println(syncRequestClient.postOrder(symbol,
+                    OrderSide.SELL, PositionSide.BOTH, OrderType.MARKET, null,
+                    value.divide(symbolPrices.get(0).getPrice(), symbolScale, RoundingMode.HALF_DOWN).toPlainString(), null, null, null, null, null, NewOrderRespType.RESULT));
+            System.out.println(syncRequestClient.postOrder(symbol1,
+                    OrderSide.BUY, PositionSide.BOTH, OrderType.MARKET, null,
+                    value.divide(symbol1Prices.get(0).getPrice(), symbol1Scale, RoundingMode.HALF_DOWN).toPlainString(), null, null, null, null, null, NewOrderRespType.RESULT));
+        }
+
+
         while (true) {
             try {
                 Thread.sleep(1000);
@@ -82,8 +113,7 @@ public class PostOrder {
                 System.out.println("获取持仓为空");
                 continue;
             }
-            String symbol = "ETHUSDT";
-            String symbol1 = "SOLUSDT";
+
             Map<String, PositionRisk> positionMap = risks.stream().filter(item -> "BOTH".equals(item.getPositionSide())).collect(Collectors.toMap(PositionRisk::getSymbol, Function.identity()));
             PositionRisk positionRisk = positionMap.get(symbol);
             PositionRisk positionRisk1 = positionMap.get(symbol1);

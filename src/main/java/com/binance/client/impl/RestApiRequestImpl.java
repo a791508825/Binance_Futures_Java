@@ -490,6 +490,7 @@ class RestApiRequestImpl {
                 SymbolPrice element = new SymbolPrice();
                 element.setSymbol(item.getString("symbol"));
                 element.setPrice(item.getBigDecimal("price"));
+                element.setTime(item.getLongOrDefault("time", 0));
                 result.add(element);
             });
 
