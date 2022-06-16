@@ -121,6 +121,8 @@ public class PostOrder {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                sendmsg("出现异常,请检查");
+                return;
             }
 
 
@@ -135,6 +137,8 @@ public class PostOrder {
                     risks = syncRequestClient.getPositionRisk();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    sendmsg("出现异常,请检查");
+                    return;
                 }
                 if (risks == null || risks.size() == 0) {
                     System.out.println("获取持仓为空");
@@ -162,6 +166,8 @@ public class PostOrder {
                         break;
                     } catch (Exception e) {
                         e.printStackTrace();
+                        sendmsg("出现异常,请检查");
+                        return;
                     }
                 }
             }
