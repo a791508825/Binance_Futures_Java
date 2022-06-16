@@ -73,6 +73,8 @@ public class PostOrder {
                 risks1 = syncRequestClient.getPositionRisk();
             } catch (Exception e) {
                 e.printStackTrace();
+                sendmsg("出现异常,请检查");
+                return;
             }
             if (risks1 == null || risks1.size() == 0) {
                 System.out.println("获取持仓为空");
