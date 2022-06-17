@@ -3,9 +3,11 @@ package com.binance.client.examples.trade;
 import com.alibaba.fastjson.JSONObject;
 import com.binance.client.RequestOptions;
 import com.binance.client.SyncRequestClient;
-
 import com.binance.client.examples.constants.PrivateConfig;
-import com.binance.client.model.enums.*;
+import com.binance.client.model.enums.NewOrderRespType;
+import com.binance.client.model.enums.OrderSide;
+import com.binance.client.model.enums.OrderType;
+import com.binance.client.model.enums.PositionSide;
 import com.binance.client.model.market.SymbolPrice;
 import com.binance.client.model.trade.AccountInformation;
 import com.binance.client.model.trade.PositionRisk;
@@ -20,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class PostOrder {
+public class PostOrder3 {
     public static void sendmsg(String message) {
         try {
             JSONObject postInfo = new JSONObject();
@@ -61,11 +63,10 @@ public class PostOrder {
     }
 
     public static void main(String[] args) {
-        String symbol = "TRXUSDT";
-        String symbol1 = "ADAUSDT";
-
-        int symbolScale = 0;
-        int symbol1Scale = 0;
+        String symbol = "BTCUSDT";
+        String symbol1 = "BNBUSDT";
+        int symbolScale = 3;
+        int symbol1Scale = 2;
 
         RequestOptions options = new RequestOptions();
         SyncRequestClient syncRequestClient = SyncRequestClient.create(PrivateConfig.API_KEY, PrivateConfig.SECRET_KEY,
@@ -92,7 +93,6 @@ public class PostOrder {
 
 
             if (firstCheck.getPositionAmt().compareTo(BigDecimal.ZERO) == 0 && firstCheck1.getPositionAmt().compareTo(BigDecimal.ZERO) == 0) {
-
 
             BigDecimal value = BigDecimal.valueOf(5000);
 
