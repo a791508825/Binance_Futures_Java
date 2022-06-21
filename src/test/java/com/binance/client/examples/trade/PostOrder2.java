@@ -1,31 +1,17 @@
 package com.binance.client.examples.trade;
 
-import com.alibaba.fastjson.JSONObject;
 import com.binance.client.RequestOptions;
 import com.binance.client.SyncRequestClient;
-
 import com.binance.client.examples.constants.PrivateConfig;
-import com.binance.client.model.enums.*;
-import com.binance.client.model.market.SymbolPrice;
-import com.binance.client.model.trade.AccountInformation;
-import com.binance.client.model.trade.PositionRisk;
-import okhttp3.*;
-import org.apache.commons.lang3.RandomUtils;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-public class PostOrder {
+public class PostOrder2 {
 
     public static void main(String[] args) {
-        String symbol = "ETHUSDT";
-        String symbol1 = "SOLUSDT";
-        int symbolScale = 3;
+        String symbol = "GMTUSDT";
+        String symbol1 = "AVAXUSDT";
+        int symbolScale = 0;
         int symbol1Scale = 0;
         BigDecimal value = BigDecimal.valueOf(5000);
         RequestOptions options = new RequestOptions();
