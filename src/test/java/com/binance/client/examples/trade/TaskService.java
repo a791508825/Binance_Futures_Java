@@ -192,7 +192,7 @@ public class TaskService {
             // 第一屏也就是钉钉消息列表里面的消息
             String title = "", context = "OKOK,小钱到手test";
             markdown.put("title", title + "|运维");
-            markdown.put("text", message);
+            markdown.put("text", message+"test");
             postInfo.put("markdown", markdown);
             postInfo.put("isAtAll", false);
             Long timestamp = System.currentTimeMillis();
